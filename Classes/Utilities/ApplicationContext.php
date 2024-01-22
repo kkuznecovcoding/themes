@@ -113,9 +113,6 @@ class ApplicationContext
         return false;
     }
 
-    /**
-     * @param FeatureManager $featureManager
-     */
     public function injectFeatureManager(FeatureManager $featureManager): void
     {
         $this->featureManager = $featureManager;

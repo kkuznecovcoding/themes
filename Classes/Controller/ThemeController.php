@@ -72,9 +72,6 @@ class ThemeController extends ActionController
      */
     protected PageRepository $pageRepository;
 
-    /**
-     * @param ConfigurationManagerInterface $configurationManager
-     */
     public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager)
     {
         $this->configurationManager = $configurationManager;
@@ -82,17 +79,11 @@ class ThemeController extends ActionController
         $this->typoScriptSetup = $this->configurationManager->getConfiguration($configurationType);
     }
 
-    /**
-     * @param ThemeRepository $themeRepository
-     */
     public function injectThemeRepository(ThemeRepository $themeRepository)
     {
         $this->themeRepository = $themeRepository;
     }
 
-    /**
-     * @param PageRepository $pageRepository
-     */
     public function injectPageRepository(PageRepository $pageRepository)
     {
         $this->pageRepository = $pageRepository;
@@ -140,7 +131,6 @@ class ThemeController extends ActionController
     /**
      * renders a given TypoScript Path.
      *
-     * @param string $path
      *
      * @return string
      * @throws InvalidControllerNameException
@@ -150,9 +140,7 @@ class ThemeController extends ActionController
     {
         /** @var CObjectViewHelper $vh */
         $vh = $this->objectManager->get(CObjectViewHelper::class);
-        $vh->setRenderChildrenClosure(function () {
-            return '';
-        });
+        $vh->setRenderChildrenClosure(fn() => '');
 
         $vh->setArguments([
             'typoscriptObjectPath' => $path,
@@ -199,8 +187,8 @@ class ThemeController extends ActionController
         foreach ($pathSegments as $segment) {
             if (!array_key_exists(($segment . '.'), $setup)) {
                 throw new Exception(
-                    'TypoScript object path "' . htmlspecialchars($typoscriptObjectPath) . '" does not exist',
-                    1253191023
+                    'TypoScript object path "' . htmlspecialchars((string) $typoscriptObjectPath) . '" does not exist',
+                    1_253_191_023
                 );
             }
             $setup = $setup[$segment . '.'];
