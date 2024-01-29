@@ -36,11 +36,14 @@ use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Mvc\Controller\Arguments;
 use TYPO3\CMS\Extbase\Mvc\Exception\InvalidControllerNameException;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
+use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextFactory;
 use TYPO3\CMS\Fluid\ViewHelpers\CObjectViewHelper;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Exception;
+use TYPO3Fluid\Fluid\View\AbstractTemplateView;
 
 /**
  * Class ThemeController.
@@ -77,6 +80,7 @@ class ThemeController extends ActionController
         $this->configurationManager = $configurationManager;
         $configurationType = ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT;
         $this->typoScriptSetup = $this->configurationManager->getConfiguration($configurationType);
+        $this->arguments = GeneralUtility::makeInstance(Arguments::class);
     }
 
     public function injectThemeRepository(ThemeRepository $themeRepository)
@@ -132,14 +136,13 @@ class ThemeController extends ActionController
      * renders a given TypoScript Path.
      *
      *
+     * @param string $path
      * @return string
-     * @throws InvalidControllerNameException
-     * @throws \TYPO3\CMS\Extbase\Object\Exception
      */
     protected function evaluateTypoScript(string $path): string
     {
         /** @var CObjectViewHelper $vh */
-        $vh = $this->objectManager->get(CObjectViewHelper::class);
+        $vh = GeneralUtility::makeInstance(CObjectViewHelper::class);
         $vh->setRenderChildrenClosure(fn() => '');
 
         $vh->setArguments([
@@ -147,9 +150,10 @@ class ThemeController extends ActionController
             'currentValueKey' => 0,
             'table' => ''
         ]);
-        /** @var RenderingContext $renderingContext */
-        $renderingContext = GeneralUtility::makeInstance(RenderingContext::class);
-        $renderingContext->setRequest($this->request);
+
+        /** @var AbstractTemplateView $view*/
+        $view = $this->view;
+        $renderingContext = $view->getRenderingContext();
         $vh->setRenderingContext($renderingContext);
         return $vh->render();
     }

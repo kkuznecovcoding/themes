@@ -29,7 +29,6 @@ namespace KayStrobach\Themes\Domain\Repository;
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Doctrine\DBAL\DBALException;
 use KayStrobach\Themes\Domain\Model\AbstractTheme;
 use KayStrobach\Themes\Domain\Model\Theme;
 use PDO;
@@ -37,9 +36,8 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\Exception;
+use TYPO3\CMS\Extbase\Exception;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
-use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\RepositoryInterface;
 
 /**
@@ -194,7 +192,7 @@ class ThemeRepository implements RepositoryInterface, SingletonInterface
 
     /**
      * @return Theme
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function findByPageOrRootline(int $pid): ?Theme
     {
@@ -211,7 +209,7 @@ class ThemeRepository implements RepositoryInterface, SingletonInterface
     /**
      * @param int $pid id of the Page
      * @return Theme
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function findByPageId(int $pid): ?Theme
     {
